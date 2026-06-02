@@ -229,39 +229,17 @@
 </head>
 <body class="bg-background text-on-surface font-body-md overflow-hidden h-screen select-none">
 
-    <!-- Top Navigation Bar -->
-    <header class="fixed top-0 right-0 w-full flex justify-between items-center px-container-margin h-16 z-50 bg-surface-container-lowest border-b border-outline-variant shadow-sm">
-        <div class="flex items-center gap-stack-md">
-            <span class="font-headline-md text-headline-md font-black text-primary tracking-tight flex items-center gap-2">
-                <span class="material-symbols-outlined text-3xl">precision_manufacturing</span>
-                Robotika
-            </span>
-            <div class="h-6 w-[1px] bg-outline-variant ml-2"></div>
-            <nav class="hidden md:flex gap-stack-lg ml-4">
-                <a class="text-primary font-label-md hover:text-primary transition-all cursor-pointer font-bold" onclick="switchRoute('simulator')">Simulation</a>
-                <a class="text-on-surface-variant font-label-md hover:text-primary transition-all cursor-pointer" onclick="switchRoute('library')">Robot Catalog</a>
-                <a class="text-on-surface-variant font-label-md hover:text-primary transition-all cursor-pointer" onclick="switchRoute('docs')">Math Docs</a>
-            </nav>
-        </div>
-        <div class="flex items-center gap-stack-md export-btn-grp">
-            <button onclick="exportPDF()" class="bg-primary text-on-primary px-stack-lg py-2 font-label-md rounded-lg hover:bg-primary-container active:scale-[0.98] transition-all flex items-center gap-1 shadow-md shadow-primary/10">
-                <span class="material-symbols-outlined text-sm">picture_as_pdf</span> Export PDF
-            </button>
-            <button onclick="exportCSV()" class="border border-outline text-on-surface px-stack-lg py-2 font-label-md rounded-lg hover:bg-surface-container transition-all flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">grid_on</span> Export CSV
-            </button>
-            <div class="flex items-center gap-stack-md ml-stack-lg">
-                <span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer">notifications</span>
-                <span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer">account_circle</span>
-            </div>
-        </div>
-    </header>
-
     <!-- Side Navigation Bar -->
-    <aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-surface-container-low w-panel-width border-r border-outline-variant">
-        <div class="pt-20 px-4 pb-4 flex flex-col h-full">
+    <aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-surface-container-low w-panel-width border-r border-outline-variant shadow-lg">
+        <div class="p-4 flex flex-col h-full">
+            <!-- Project Logo -->
+            <div class="flex items-center gap-2 mb-6 px-2 mt-2">
+                <span class="material-symbols-outlined text-3xl text-primary">precision_manufacturing</span>
+                <span class="font-headline-md text-xl font-black text-primary tracking-tight">Robotika</span>
+            </div>
+
             <!-- Project Engine Version Status Badge -->
-            <div class="flex items-center gap-stack-md mb-8 px-2 bg-white p-3 rounded-xl border border-outline-variant/30">
+            <div class="flex items-center gap-stack-md mb-6 px-2 bg-white p-3 rounded-xl border border-outline-variant/30 shadow-sm">
                 <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
                     <span class="material-symbols-outlined text-on-primary-container">science</span>
                 </div>
@@ -303,8 +281,14 @@
             </nav>
             
             <!-- Sidebar Footer -->
-            <div class="border-t border-outline-variant pt-4 mt-auto">
-                <div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-white hover:text-primary transition-all rounded-lg cursor-pointer">
+            <div class="border-t border-outline-variant pt-4 mt-auto space-y-2">
+                <button onclick="exportPDF()" class="w-full bg-primary/10 text-primary py-2.5 font-label-md rounded-lg hover:bg-primary/20 transition-all flex items-center justify-center gap-2 font-bold shadow-sm">
+                    <span class="material-symbols-outlined text-sm">picture_as_pdf</span> Export Report PDF
+                </button>
+                <button onclick="exportCSV()" class="w-full bg-surface-container-high text-on-surface-variant py-2.5 font-label-md rounded-lg hover:bg-outline-variant/30 transition-all flex items-center justify-center gap-2 font-bold mb-2">
+                    <span class="material-symbols-outlined text-sm">grid_on</span> Export Data CSV
+                </button>
+                <div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-white hover:text-primary transition-all rounded-lg cursor-pointer mt-2">
                     <span class="material-symbols-outlined">settings</span>
                     <span class="font-label-md">Settings</span>
                 </div>
@@ -317,7 +301,7 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="ml-panel-width pt-16 flex h-screen overflow-hidden relative">
+    <main class="ml-panel-width flex h-screen overflow-hidden relative">
 
         <!-- PRINT REPORT HEADER (Only visible during printing) -->
         <div class="print-report-header hidden w-full p-6 border-b-2 border-primary mb-6">
@@ -1015,34 +999,49 @@
 
                 <!-- Status Bento Layout -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mb-8">
-                    <div class="pro-card p-6 rounded-2xl">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="font-label-md text-on-surface-variant font-bold">Kinematic Solver Engine</span>
-                            <span class="px-2 py-0.5 bg-secondary-container/20 text-secondary border border-secondary-container/30 text-[10px] font-bold rounded-full uppercase">Nominal</span>
+                    <div class="pro-card p-6 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="font-label-md text-on-surface-variant font-bold">Kinematic Solver Engine</span>
+                                <span class="px-2 py-0.5 bg-secondary-container/20 text-secondary border border-secondary-container/30 text-[10px] font-bold rounded-full uppercase">Nominal</span>
+                            </div>
+                            <h3 class="text-3xl font-black text-on-surface mb-2 font-data-sm">CCD Core v2.4</h3>
+                            <p class="text-xs text-on-surface-variant mb-6">Active numerical inverse kinematics matrices running on local client browser with sub-millisecond converge speeds.</p>
                         </div>
-                        <h3 class="text-3xl font-black text-on-surface mb-2 font-data-sm">CCD Core v2.4</h3>
-                        <p class="text-xs text-on-surface-variant">Active numerical inverse kinematics matrices running on local client browser with sub-millisecond converge speeds.</p>
+                        <button onclick="switchRoute('simulator'); setKinematicMode('ik');" class="mt-auto w-full border border-primary text-primary py-2 rounded-xl font-label-md text-xs font-bold hover:bg-primary/5 transition-all flex items-center justify-center gap-1">
+                            Configure Solver <span class="material-symbols-outlined text-sm">settings_applications</span>
+                        </button>
                     </div>
-                    <div class="pro-card p-6 rounded-2xl">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="font-label-md text-on-surface-variant font-bold">Active Configuration</span>
-                            <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold rounded-full uppercase">Active</span>
+                    <div class="pro-card p-6 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="font-label-md text-on-surface-variant font-bold">Active Configuration</span>
+                                <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold rounded-full uppercase">Active</span>
+                            </div>
+                            <h3 id="home-active-model-name" class="text-3xl font-black text-on-surface mb-2 font-data-sm">6 DOF Arm</h3>
+                            <p class="text-xs text-on-surface-variant mb-6">Default 6-Axis serial revolute configurations active. Current reach status: Nominal workspace tolerances.</p>
                         </div>
-                        <h3 id="home-active-model-name" class="text-3xl font-black text-on-surface mb-2 font-data-sm">6 DOF Arm</h3>
-                        <p class="text-xs text-on-surface-variant">Default 6-Axis serial revolute configurations active. Current reach status: Nominal workspace tolerances.</p>
+                        <button onclick="switchRoute('library');" class="mt-auto w-full border border-on-surface-variant text-on-surface-variant py-2 rounded-xl font-label-md text-xs font-bold hover:bg-surface-container transition-all flex items-center justify-center gap-1">
+                            Change Robot <span class="material-symbols-outlined text-sm">swap_horiz</span>
+                        </button>
                     </div>
-                    <div class="pro-card p-6 rounded-2xl">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="font-label-md text-on-surface-variant font-bold">Active Diagnostic Stream</span>
-                            <span class="px-2 py-0.5 bg-secondary/10 text-secondary border border-secondary/20 text-[10px] font-bold rounded-full uppercase">Connected</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-4xl text-secondary">memory</span>
-                            <div>
-                                <h4 class="text-lg font-bold text-on-surface leading-tight">60 FPS WebGL</h4>
-                                <p class="text-[11px] text-on-surface-variant">GPU-accelerated vector computations enabled. Vertex loading: Minimal</p>
+                    <div class="pro-card p-6 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="font-label-md text-on-surface-variant font-bold">Active Diagnostic Stream</span>
+                                <span class="px-2 py-0.5 bg-secondary/10 text-secondary border border-secondary/20 text-[10px] font-bold rounded-full uppercase">Connected</span>
+                            </div>
+                            <div class="flex items-center gap-3 mb-6">
+                                <span class="material-symbols-outlined text-4xl text-secondary">memory</span>
+                                <div>
+                                    <h4 class="text-lg font-bold text-on-surface leading-tight">60 FPS WebGL</h4>
+                                    <p class="text-[11px] text-on-surface-variant">GPU-accelerated vector computations enabled. Vertex loading: Minimal</p>
+                                </div>
                             </div>
                         </div>
+                        <button onclick="switchRoute('workspace');" class="mt-auto w-full bg-secondary/10 text-secondary py-2 rounded-xl font-label-md text-xs font-bold hover:bg-secondary/20 transition-all flex items-center justify-center gap-1">
+                            View Diagnostics <span class="material-symbols-outlined text-sm">analytics</span>
+                        </button>
                     </div>
                 </div>
 
@@ -1079,25 +1078,7 @@
 
     </main>
 
-    <!-- Footer Status Bar -->
-    <footer class="fixed bottom-0 left-0 w-full flex justify-between items-center px-container-margin py-2 z-50 bg-white border-t border-outline-variant">
-        <div class="flex items-center gap-stack-lg">
-            <span class="font-label-sm text-on-surface-variant text-[11px]">© 2026 Robotika Industrial</span>
-            <div class="flex items-center gap-2 bg-secondary/10 px-3 py-1 rounded-full border border-secondary/20">
-                <span class="w-2 h-2 rounded-full bg-secondary"></span>
-                <span class="text-[11px] font-bold text-secondary uppercase">System: Nominal</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-on-surface-variant text-[16px]">memory</span>
-                <span class="font-data-sm text-[11px] text-on-surface-variant">RAM allocation: Sub-millisecond convergence</span>
-            </div>
-        </div>
-        <div class="flex gap-stack-lg items-center text-[11px]">
-            <a class="font-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Privacy</a>
-            <a class="font-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Terms</a>
-            <a class="font-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer" onclick="switchRoute('docs')">Docs</a>
-        </div>
-    </footer>
+
 
     <!-- App Logic Scripts -->
     <script src="kinematics.js"></script>
