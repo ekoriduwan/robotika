@@ -70,6 +70,7 @@ function switchRoute(route) {
     const panelLib = document.getElementById("panel-library");
     const panelDocs = document.getElementById("panel-docs");
     const panelHome = document.getElementById("panel-home");
+    const panelSettings = document.getElementById("panel-settings");
 
     // Toggle Shared 3D Viewport visibility
     const simViewport = document.getElementById("simulation-viewport");
@@ -82,6 +83,7 @@ function switchRoute(route) {
     panelLib.classList.add("hidden");
     panelDocs.classList.add("hidden");
     panelHome.classList.add("hidden");
+    if(panelSettings) panelSettings.classList.add("hidden");
     wsBento.classList.add("hidden");
     simViewport.classList.add("hidden");
 
@@ -113,6 +115,8 @@ function switchRoute(route) {
     } else if (route === "home") {
         panelHome.classList.remove("hidden");
         document.getElementById("home-active-model-name").innerText = ROBOT_CONFIGS[currentRobot].name;
+    } else if (route === "settings") {
+        if(panelSettings) panelSettings.classList.remove("hidden");
     }
 
     // Force canvas resize on layout transitions
@@ -368,7 +372,7 @@ function triggerWarningState() {
     const indicator = document.getElementById("active-robot-indicator");
     indicator.className = "px-3 h-10 font-label-md flex items-center gap-1 bg-error/15 text-error rounded-lg transition-all border border-error/20";
     indicator.children[0].className = "w-2 h-2 bg-error rounded-full inline-block animate-pulse";
-    document.getElementById("active-robot-name").innerText = "Out of Reach / Singularity";
+    document.getElementById("active-robot-name").innerText = window.t ? window.t("alert.outOfReach") : "Out of Reach / Singularity";
 
     // Workspace Bento alerts
     const wsBentoAlert = document.getElementById("singularity-alert-card");
@@ -377,7 +381,7 @@ function triggerWarningState() {
         document.getElementById("singularity-indicator-icon").className = "w-12 h-12 rounded-lg bg-error/10 flex items-center justify-center text-error";
         document.getElementById("singularity-icon-name").innerText = "warning";
         document.getElementById("singularity-icon-name").className = "material-symbols-outlined text-2xl animate-pulse-warning";
-        document.getElementById("singularity-status").innerText = "ACTIVE BOUNDS";
+        document.getElementById("singularity-status").innerText = window.t ? window.t("alert.activeBounds") : "ACTIVE BOUNDS";
         document.getElementById("singularity-status").className = "font-data-sm text-lg font-bold text-error";
     }
 }
@@ -396,7 +400,7 @@ function resetWarningState() {
         document.getElementById("singularity-indicator-icon").className = "w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary";
         document.getElementById("singularity-icon-name").innerText = "check_circle";
         document.getElementById("singularity-icon-name").className = "material-symbols-outlined text-2xl";
-        document.getElementById("singularity-status").innerText = "NONE";
+        document.getElementById("singularity-status").innerText = window.t ? window.t("alert.none") : "NONE";
         document.getElementById("singularity-status").className = "font-data-sm text-lg font-bold text-secondary";
     }
 }
