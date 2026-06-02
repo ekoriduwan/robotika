@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Robotika | Interactive Robotic Arm Simulator</title>
+    
+    <!-- Dependencies -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Tailwind Configuration matching DESIGN.md -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#006278",
+                        "surface": "#f7f9fc",
+                        "secondary": "#006e1c",
+                        "on-primary-container": "#f8f7ff",
+                        "surface-container-high": "#e6e8eb",
+                        "on-secondary-fixed-variant": "#005313",
+                        "surface-tint": "#0054d6",
+                        "on-primary-fixed": "#001849",
+                        "primary-fixed": "#dae1ff",
+                        "inverse-primary": "#b3c5ff",
+                        "outline-variant": "#c2c6d8",
+                        "surface-dim": "#d8dadd",
+                        "secondary-container": "#60fe6c",
+                        "secondary-fixed-dim": "#42e355",
+                        "on-surface-variant": "#424656",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#eceef1",
+                        "on-tertiary-fixed-variant": "#004e60",
+                        "on-background": "#191c1e",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "on-primary-fixed-variant": "#003fa4",
+                        "inverse-on-surface": "#eff1f4",
+                        "primary": "#0050cb",
+                        "tertiary-fixed-dim": "#4cd6ff",
+                        "inverse-surface": "#2d3133",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#b7eaff",
+                        "secondary-fixed": "#70ff76",
+                        "on-tertiary-fixed": "#001f28",
+                        "on-secondary-fixed": "#002204",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-container": "#effaff",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "outline": "#727687",
+                        "surface-container-highest": "#e0e3e6",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#007c98",
+                        "primary-container": "#0066ff",
+                        "surface-variant": "#e0e3e6",
+                        "surface-container-low": "#f2f4f7",
+                        "on-secondary-container": "#00731d",
+                        "background": "#f7f9fc",
+                        "surface-bright": "#f7f9fc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "xxl": "1rem",
+                        "xxxl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "xl": "32px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "base": "8px",
+                        "stack-sm": "4px",
+                        "stack-md": "12px",
+                        "stack-lg": "24px",
+                        "container-margin": "24px",
+                        "panel-width": "280px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "data-sm": ["JetBrains Mono"],
+                        "data-lg": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "data-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "data-lg": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        };
+    </script>
+    
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .custom-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #e6e8eb;
+            border-radius: 99px;
+            outline: none;
+        }
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #0066ff;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        .custom-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.15);
+        }
+        .pro-card {
+            background: #ffffff;
+            border: 1px solid #e6e8eb;
+            box-shadow: 0 4px 20px rgba(0, 80, 203, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .custom-card {
+            background: #ffffff;
+            border: 1px solid #e6e8eb;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .custom-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 80, 203, 0.1), 0 4px 6px -4px rgba(0, 80, 203, 0.1);
+            border-color: #0066ff;
+        }
+        .viewport-gradient {
+            background: radial-gradient(circle at center, #ffffff 0%, #f7f9fc 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(194, 198, 216, 0.5);
+        }
+        .active-glow {
+            box-shadow: 0 0 12px 0 rgba(0, 102, 255, 0.2);
+        }
+        /* Telemetry Custom Scrollbar */
+        .telemetry-scroll::-webkit-scrollbar { width: 4px; }
+        .telemetry-scroll::-webkit-scrollbar-track { background: transparent; }
+        .telemetry-scroll::-webkit-scrollbar-thumb { background: #c2c6d8; border-radius: 4px; }
+        
+        @keyframes pulse-warning {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.15); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .animate-pulse-warning {
+            animation: pulse-warning 2s infinite ease-in-out;
+        }
+        
+        /* Print styling for PDF Export */
+        @media print {
+            body {
+                background: white;
+                color: black;
+                overflow: visible !important;
+                height: auto !important;
+            }
+            header, aside, footer, .viewport-controls, .right-panel-ctrl, .bottom-stream, .export-btn-grp {
+                display: none !important;
+            }
+            main {
+                margin-left: 0 !important;
+                padding-top: 0 !important;
+                height: auto !important;
+                overflow: visible !important;
+            }
+            .print-report-header {
+                display: block !important;
+            }
+            .print-full-width {
+                width: 100% !important;
+                max-width: 100% !important;
+                float: none !important;
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                margin-bottom: 20px !important;
+                page-break-inside: avoid;
+            }
+            .threejs-viewport-container {
+                height: 400px !important;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden h-screen select-none">
+
+    <!-- Top Navigation Bar -->
+    <header class="fixed top-0 right-0 w-full flex justify-between items-center px-container-margin h-16 z-50 bg-surface-container-lowest border-b border-outline-variant shadow-sm">
+        <div class="flex items-center gap-stack-md">
+            <span class="font-headline-md text-headline-md font-black text-primary tracking-tight flex items-center gap-2">
+                <span class="material-symbols-outlined text-3xl">precision_manufacturing</span>
+                Robotika
+            </span>
+            <div class="h-6 w-[1px] bg-outline-variant ml-2"></div>
+            <nav class="hidden md:flex gap-stack-lg ml-4">
+                <a class="text-primary font-label-md hover:text-primary transition-all cursor-pointer font-bold" onclick="switchRoute('simulator')">Simulation</a>
+                <a class="text-on-surface-variant font-label-md hover:text-primary transition-all cursor-pointer" onclick="switchRoute('library')">Robot Catalog</a>
+                <a class="text-on-surface-variant font-label-md hover:text-primary transition-all cursor-pointer" onclick="switchRoute('docs')">Math Docs</a>
+            </nav>
+        </div>
+        <div class="flex items-center gap-stack-md export-btn-grp">
+            <button onclick="exportPDF()" class="bg-primary text-on-primary px-stack-lg py-2 font-label-md rounded-lg hover:bg-primary-container active:scale-[0.98] transition-all flex items-center gap-1 shadow-md shadow-primary/10">
+                <span class="material-symbols-outlined text-sm">picture_as_pdf</span> Export PDF
+            </button>
+            <button onclick="exportCSV()" class="border border-outline text-on-surface px-stack-lg py-2 font-label-md rounded-lg hover:bg-surface-container transition-all flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">grid_on</span> Export CSV
+            </button>
+            <div class="flex items-center gap-stack-md ml-stack-lg">
+                <span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer">notifications</span>
+                <span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer">account_circle</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Side Navigation Bar -->
+    <aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-surface-container-low w-panel-width border-r border-outline-variant">
+        <div class="pt-20 px-4 pb-4 flex flex-col h-full">
+            <!-- Project Engine Version Status Badge -->
+            <div class="flex items-center gap-stack-md mb-8 px-2 bg-white p-3 rounded-xl border border-outline-variant/30">
+                <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
+                    <span class="material-symbols-outlined text-on-primary-container">science</span>
+                </div>
+                <div>
+                    <h3 class="font-label-md text-on-surface leading-tight font-bold">Lumina Precision</h3>
+                    <p class="text-[11px] font-bold text-secondary uppercase tracking-wider flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 bg-secondary rounded-full inline-block animate-pulse"></span>
+                        Status: Nominal
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Side Navigation Menu -->
+            <nav id="sidebar-nav" class="flex-1 space-y-1 overflow-y-auto no-scrollbar">
+                <div data-route="home" onclick="switchRoute('home')" class="sidebar-item flex items-center gap-3 p-3 text-on-surface-variant hover:bg-white hover:text-primary transition-all rounded-lg cursor-pointer">
+                    <span class="material-symbols-outlined">home</span>
+                    <span class="font-label-md">Home Dashboard</span>
+                </div>
+                <div data-route="library" onclick="switchRoute('library')" class="sidebar-item flex items-center gap-3 p-3 text-on-surface-variant hover:bg-white hover:text-primary transition-all rounded-lg cursor-pointer">
+                    <span class="material-symbols-outlined">precision_manufacturing</span>
+                    <span class="font-label-md">Robot Library</span>
+                </div>
+                <div data-route="simulator" onclick="switchRoute('simulator')" class="sidebar-item flex items-center gap-3 p-3 text-primary bg-white shadow-sm border border-outline-variant/20 transition-all rounded-lg cursor-pointer">
+                    <span class="material-symbols-outlined">view_in_ar</span>
+                    <span class="font-label-md font-bold">3D Simulator</span>
+                </div>
+                <div data-route="workspace" onclick="switchRoute('workspace')" class="sidebar-item flex items-center gap-3 p-3 text-on-surface-variant hover:bg-white hover:text-primary transition-all rounded-lg cursor-pointer">
+                    <span class="material-symbols-outlined">workspaces</span>
+                    <span class="font-label-md">Workspace Analysis</span>
+                </div>
+                <div data-route="path" onclick="switchRoute('path')" class="sidebar-item flex items-center gap-3 p-3 text-on-surface-variant hover:bg-white hover:text-primary transition-all rounded-lg cursor-pointer">
+                    <span class="material-symbols-outlined">route</span>
+                    <span class="font-label-md">Path Planning</span>
+                </div>
+                <div data-route="docs" onclick="switchRoute('docs')" class="sidebar-item flex items-center gap-3 p-3 text-on-surface-variant hover:bg-white hover:text-primary transition-all rounded-lg cursor-pointer">
+                    <span class="material-symbols-outlined">menu_book</span>
+                    <span class="font-label-md">Documentation</span>
+                </div>
+            </nav>
+            
+            <!-- Sidebar Footer -->
+            <div class="border-t border-outline-variant pt-4 mt-auto">
+                <div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-white hover:text-primary transition-all rounded-lg cursor-pointer">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="font-label-md">Settings</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-white hover:text-primary transition-all rounded-lg cursor-pointer">
+                    <span class="material-symbols-outlined">help_outline</span>
+                    <span class="font-label-md">Support Docs</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="ml-panel-width pt-16 flex h-screen overflow-hidden relative">
+
+        <!-- PRINT REPORT HEADER (Only visible during printing) -->
+        <div class="print-report-header hidden w-full p-6 border-b-2 border-primary mb-6">
+            <h1 class="text-3xl font-black text-primary">Robotika Industrial Systems</h1>
+            <h2 class="text-xl font-bold mt-2">Kinematic Simulation and Workspace Diagnostics Report</h2>
+            <p class="text-sm text-outline mt-1">Date Generated: <span id="print-date">June 2, 2026</span> | Engine Version: v2.4 (Lumina Precision)</p>
+        </div>
+
+        <!-- 3D VIEWPORT CONTAINER (Shared dynamically in background) -->
+        <div id="simulation-viewport" class="flex-1 relative viewport-gradient flex flex-col h-full border-r border-outline-variant/30">
+            
+            <!-- Three.js WebGL Canvas Anchor -->
+            <div id="canvas-container" class="absolute inset-0 w-full h-full z-0 threejs-viewport-container"></div>
+            
+            <!-- Overlay Viewport controls (Reset camera, toggle grid, axis) -->
+            <div class="absolute top-6 left-6 flex gap-2 viewport-controls z-10">
+                <div class="bg-white/95 backdrop-blur shadow-lg p-1.5 rounded-xl flex gap-1 border border-outline-variant/20">
+                    <button onclick="resetCamera()" title="Reset Camera" class="w-10 h-10 flex items-center justify-center hover:bg-primary-container/20 text-on-surface-variant hover:text-primary transition-all rounded-lg">
+                        <span class="material-symbols-outlined text-[22px]">videocam</span>
+                    </button>
+                    <button id="toggle-grid-btn" onclick="toggleGrid()" title="Toggle Grid Overlay" class="w-10 h-10 flex items-center justify-center hover:bg-primary-container/20 text-on-surface-variant hover:text-primary transition-all rounded-lg">
+                        <span class="material-symbols-outlined text-[22px]">grid_4x4</span>
+                    </button>
+                    <button id="active-robot-indicator" class="px-3 h-10 font-label-md flex items-center gap-1 hover:bg-primary/5 text-primary rounded-lg transition-all border border-primary/20 bg-white">
+                        <span class="w-2 h-2 bg-primary rounded-full animate-ping"></span>
+                        <span id="active-robot-name" class="font-bold">Articulated (6 DOF)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Viewport Bottom Legend/Labels Overlay -->
+            <div id="viewport-legend" class="absolute bottom-6 left-6 z-10 flex gap-stack-md viewport-controls">
+                <div class="glass-panel px-stack-md py-stack-sm rounded-full flex items-center gap-base border border-primary/20">
+                    <span class="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(0,102,255,0.4)]"></span>
+                    <span class="font-data-sm text-[10px] font-bold uppercase tracking-widest text-on-surface">Base Link</span>
+                </div>
+                <div id="legend-reach" class="glass-panel px-stack-md py-stack-sm rounded-full flex items-center gap-base border border-tertiary/20 hidden">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#00D1FF] shadow-[0_0_8px_rgba(0,209,255,0.4)] animate-pulse"></span>
+                    <span class="font-data-sm text-[10px] font-bold uppercase tracking-widest text-on-surface">Workspace Cloud</span>
+                </div>
+                <div id="legend-path" class="glass-panel px-stack-md py-stack-sm rounded-full flex items-center gap-base border border-secondary/20 hidden">
+                    <span class="w-2.5 h-2.5 rounded-full bg-secondary shadow-[0_0_8px_rgba(0,110,28,0.4)] animate-pulse"></span>
+                    <span class="font-data-sm text-[10px] font-bold uppercase tracking-widest text-on-surface">Planned Trajectory</span>
+                </div>
+            </div>
+
+            <!-- Bottom Dashboard Stream: Matrices and Telemetry (SIMULATOR View) -->
+            <div id="simulator-bottom-panel" class="mt-auto z-10 p-6 flex gap-6 items-end pointer-events-none w-full bottom-stream">
+                <!-- HTM 4x4 Transformation Matrix Card -->
+                <div class="flex-1 pro-card p-6 rounded-2xl pointer-events-auto shadow-lg bg-white/95 backdrop-blur">
+                    <header class="flex justify-between items-center mb-4">
+                        <span class="font-label-md text-on-surface-variant font-bold">Transformation Matrix (T)</span>
+                        <div class="px-2 py-1 bg-surface-container-high rounded text-[10px] font-bold text-on-surface-variant">REALTIME</div>
+                    </header>
+                    <div id="matrix-display" class="grid grid-cols-4 grid-rows-4 gap-2 font-data-sm text-data-sm border border-outline-variant/20 p-4 rounded-xl bg-surface-container-low/30 text-right">
+                        <!-- Matrix entries dynamic -->
+                        <div class="text-tertiary font-bold" id="m00">1.000</div>
+                        <div class="text-on-surface-variant" id="m01">0.000</div>
+                        <div class="text-on-surface-variant" id="m02">0.000</div>
+                        <div class="text-primary font-bold" id="m03">0.0</div>
+                        <div class="text-on-surface-variant" id="m10">0.000</div>
+                        <div class="text-tertiary font-bold" id="m11">1.000</div>
+                        <div class="text-on-surface-variant" id="m12">0.000</div>
+                        <div class="text-primary font-bold" id="m13">0.0</div>
+                        <div class="text-on-surface-variant" id="m20">0.000</div>
+                        <div class="text-on-surface-variant" id="m21">0.000</div>
+                        <div class="text-tertiary font-bold" id="m22">1.000</div>
+                        <div class="text-primary font-bold" id="m23">0.0</div>
+                        <div class="text-on-surface-variant/40" id="m30">0.000</div>
+                        <div class="text-on-surface-variant/40" id="m31">0.000</div>
+                        <div class="text-on-surface-variant/40" id="m32">0.000</div>
+                        <div class="text-on-surface-variant/40 font-bold" id="m33">1.000</div>
+                    </div>
+                </div>
+                <!-- Joint Streams Telemetry -->
+                <div class="w-80 pro-card p-6 rounded-2xl pointer-events-auto shadow-lg bg-white/95 backdrop-blur">
+                    <header class="flex justify-between items-center mb-4">
+                        <span class="font-label-md text-on-surface-variant font-bold">Live Joint Telemetry</span>
+                        <div class="flex items-center gap-1">
+                            <div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+                            <span class="text-[10px] text-secondary font-bold">STREAMING</span>
+                        </div>
+                    </header>
+                    <div id="joint-streams-container" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar">
+                        <!-- Dynamic joints entries -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DYNAMIC CONTROL PANELS (RIGHTSIDE SIDEBARS) -->
+        
+        <!-- View 1: 3D SIMULATOR KINEMATICS CONTROL PANEL -->
+        <aside id="panel-simulator" class="w-[400px] h-full bg-white border-l border-outline-variant flex flex-col z-30 shadow-2xl right-panel-ctrl print-full-width">
+            <div class="p-stack-lg flex flex-col h-full">
+                <header class="mb-6">
+                    <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Kinematics Control</h2>
+                    <p class="text-on-surface-variant font-body-md text-sm">Configure multi-DOF articulation values</p>
+                </header>
+                <!-- Tab Toggle: Forward vs Inverse -->
+                <div class="flex bg-surface-container-low rounded-xl p-1 mb-6 border border-outline-variant/20">
+                    <button class="flex-1 py-2 font-label-md text-primary bg-white rounded-lg shadow-sm transition-all border border-outline-variant/10 font-bold" id="tab-fk" onclick="setKinematicMode('fk')">Forward</button>
+                    <button class="flex-1 py-2 font-label-md text-on-surface-variant hover:text-on-surface transition-all font-semibold" id="tab-ik" onclick="setKinematicMode('ik')">Inverse</button>
+                </div>
+                <!-- Controls Content Wrapper -->
+                <div class="flex-1 overflow-y-auto no-scrollbar space-y-6">
+                    <!-- Forward Kinematics Inputs (Joint Slider Sets) -->
+                    <div class="space-y-4" id="fk-controls-container">
+                        <!-- Sliders will be dynamically populated according to Selected Robot Joints -->
+                    </div>
+                    <!-- Inverse Kinematics Coordinates Input Form -->
+                    <div class="hidden space-y-4 animate-in fade-in duration-300" id="ik-controls-container">
+                        <h3 class="font-label-md text-on-surface font-bold">Target Cartesian Coordinate</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="font-label-sm text-on-surface-variant uppercase tracking-wider text-[11px] font-bold">Position X</label>
+                                <input id="ik-x" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-2.5 font-data-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" type="number" step="10" value="0"/>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="font-label-sm text-on-surface-variant uppercase tracking-wider text-[11px] font-bold">Position Y</label>
+                                <input id="ik-y" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-2.5 font-data-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" type="number" step="10" value="150"/>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="font-label-sm text-on-surface-variant uppercase tracking-wider text-[11px] font-bold">Position Z</label>
+                                <input id="ik-z" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-2.5 font-data-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" type="number" step="10" value="300"/>
+                            </div>
+                            <div class="h-full flex items-center justify-center">
+                                <span class="text-[10px] text-outline font-bold">UNIT: MILLIMETERS</span>
+                            </div>
+                        </div>
+                        <div class="bg-primary/5 p-4 rounded-xl border border-primary/10 mt-4">
+                            <span class="font-label-sm text-primary uppercase block tracking-wider mb-1 font-bold">IK Solver Constraints</span>
+                            <p class="text-[11px] text-on-surface-variant">The numerical solver convergent path respects individual rotational limits of joints (J1 to J6) and checks workspace bounds.</p>
+                        </div>
+                    </div>
+                    <!-- DH Parameters Matrix Panel -->
+                    <div class="border-t border-outline-variant/50 pt-4 mt-6">
+                        <button onclick="toggleDHParameters()" class="w-full flex justify-between items-center text-on-surface-variant hover:text-primary transition-colors font-bold text-sm">
+                            <span>DENAVIT-HARTENBERG PARAMS</span>
+                            <span id="dh-toggle-icon" class="material-symbols-outlined">expand_more</span>
+                        </button>
+                        <div id="dh-table-container" class="hidden mt-3 overflow-x-auto border border-outline-variant/20 rounded-xl bg-surface-container-low/30">
+                            <table class="w-full font-data-sm text-[11px] text-left">
+                                <thead class="bg-surface-container-high text-on-surface-variant">
+                                    <tr>
+                                        <th class="p-2">Joint</th>
+                                        <th class="p-2">a (link)</th>
+                                        <th class="p-2">α (twist)</th>
+                                        <th class="p-2">d (offset)</th>
+                                        <th class="p-2">θ (angle)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dh-table-body" class="divide-y divide-outline-variant/10">
+                                    <!-- Dynamic DH values -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Compute action triggers -->
+                <div class="border-t border-outline-variant pt-stack-lg mt-6 flex gap-4">
+                    <button onclick="triggerSolve()" class="flex-1 bg-primary text-on-primary font-label-md h-14 rounded-xl hover:bg-primary-container shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">play_arrow</span>
+                        <span id="compute-btn-label">Compute System</span>
+                    </button>
+                    <button onclick="resetJoints()" class="w-14 border border-outline text-on-surface h-14 rounded-xl hover:bg-surface-container transition-all flex items-center justify-center" title="Reset Configurations">
+                        <span class="material-symbols-outlined">refresh</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- View 2: WORKSPACE ANALYSIS CONTROL PANEL -->
+        <aside id="panel-workspace" class="w-[400px] h-full bg-white border-l border-outline-variant flex flex-col z-30 shadow-2xl right-panel-ctrl print-full-width hidden">
+            <!-- Bento Stats Overlay for Workspace tab (Inserted dynamically above viewport when in workspace tab) -->
+            <div id="workspace-bento" class="absolute top-gutter left-gutter right-[416px] grid grid-cols-1 md:grid-cols-4 gap-gutter z-10 pointer-events-none">
+                <div class="stat-card glass-panel p-4 rounded-xl shadow-sm flex items-center gap-4 pointer-events-auto">
+                    <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-2xl">polyline</span>
+                    </div>
+                    <div>
+                        <span class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-widest block font-bold">Reach Volume</span>
+                        <div class="flex items-baseline gap-1">
+                            <span id="reach-volume-val" class="font-data-sm text-2xl font-bold text-on-surface">14.32</span>
+                            <span class="font-data-sm text-xs text-on-surface-variant">m³</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card glass-panel p-4 rounded-xl shadow-sm flex items-center gap-4 pointer-events-auto">
+                    <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-2xl">straighten</span>
+                    </div>
+                    <div>
+                        <span class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-widest block font-bold">Max Radius</span>
+                        <div class="flex items-baseline gap-1">
+                            <span id="max-radius-val" class="font-data-sm text-2xl font-bold text-on-surface">450</span>
+                            <span class="font-data-sm text-xs text-on-surface-variant">mm</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card glass-panel p-4 rounded-xl shadow-sm flex items-center gap-4 pointer-events-auto">
+                    <div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
+                        <span class="material-symbols-outlined text-2xl">weight</span>
+                    </div>
+                    <div>
+                        <span class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-widest block font-bold">Max Payload</span>
+                        <div class="flex items-baseline gap-1">
+                            <span id="payload-val" class="font-data-sm text-2xl font-bold text-secondary">15.0</span>
+                            <span class="font-data-sm text-xs text-on-surface-variant">kg</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="singularity-alert-card" class="stat-card glass-panel p-4 rounded-xl shadow-sm flex items-center gap-4 border-l-4 border-l-secondary pointer-events-auto">
+                    <div id="singularity-indicator-icon" class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
+                        <span class="material-symbols-outlined text-2xl" id="singularity-icon-name">check_circle</span>
+                    </div>
+                    <div>
+                        <span class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-widest block font-bold" id="singularity-label">Singularities</span>
+                        <div class="flex items-baseline gap-1">
+                            <span id="singularity-status" class="font-data-sm text-lg font-bold text-secondary">NONE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-stack-lg flex flex-col h-full mt-24 md:mt-0">
+                <header class="mb-6">
+                    <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Workspace</h2>
+                    <p class="text-on-surface-variant font-body-md text-sm">Analyze physical spatial reach structures</p>
+                </header>
+                <div class="flex-1 overflow-y-auto no-scrollbar space-y-6">
+                    <!-- Point density slider -->
+                    <section class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/30">
+                        <label class="font-label-sm text-[11px] text-on-surface-variant block mb-2 uppercase tracking-wider font-bold">Point Sampling Density</label>
+                        <input id="point-density-slider" class="w-full accent-primary h-1.5 rounded-full appearance-none cursor-pointer bg-surface-container-highest" max="5000" min="500" step="500" type="range" value="2000"/>
+                        <div class="flex justify-between mt-1 font-data-sm text-[10px] text-outline">
+                            <span>Draft (500)</span>
+                            <span id="density-val" class="text-primary font-bold">2000 pts</span>
+                            <span>Dense (5000)</span>
+                        </div>
+                    </section>
+                    
+                    <!-- Projection Planes slices -->
+                    <section>
+                        <label class="font-label-sm text-[11px] text-on-surface-variant block mb-3 uppercase tracking-wider font-bold font-bold">Workspace Projection Slices</label>
+                        <div class="space-y-2">
+                            <button id="plane-3d" onclick="filterProjection('3d')" class="w-full flex items-center justify-between p-3 bg-primary-fixed/40 border border-primary text-primary rounded-lg active-glow transition-all font-semibold text-xs">
+                                <span class="font-data-sm">3D Volume Cloud</span>
+                                <span class="material-symbols-outlined text-lg">check_circle</span>
+                            </button>
+                            <button id="plane-xy" onclick="filterProjection('xy')" class="w-full flex items-center justify-between p-3 bg-surface-container-high border border-outline-variant text-on-surface-variant rounded-lg hover:bg-white transition-all text-xs">
+                                <span class="font-data-sm">XY Plane - Horizontal Slice</span>
+                                <span class="material-symbols-outlined text-lg opacity-0">check_circle</span>
+                            </button>
+                            <button id="plane-xz" onclick="filterProjection('xz')" class="w-full flex items-center justify-between p-3 bg-surface-container-high border border-outline-variant text-on-surface-variant rounded-lg hover:bg-white transition-all text-xs">
+                                <span class="font-data-sm">XZ Plane - Frontal Slice</span>
+                                <span class="material-symbols-outlined text-lg opacity-0">check_circle</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Realtime Tool coordinates telemetry -->
+                    <section>
+                        <label class="font-label-sm text-[11px] text-on-surface-variant block mb-2 uppercase tracking-wider font-bold">TCP Centerpoint Matrix</label>
+                        <div class="grid grid-cols-2 gap-2 font-data-sm text-xs">
+                            <div class="flex justify-between p-2 bg-white border border-outline-variant/40 rounded-xl">
+                                <span class="text-outline font-bold">X</span>
+                                <span class="text-primary font-bold" id="ws-tcp-x">0.0</span>
+                            </div>
+                            <div class="flex justify-between p-2 bg-white border border-outline-variant/40 rounded-xl">
+                                <span class="text-outline font-bold">Y</span>
+                                <span class="text-primary font-bold" id="ws-tcp-y">150.0</span>
+                            </div>
+                            <div class="flex justify-between p-2 bg-white border border-outline-variant/40 rounded-xl">
+                                <span class="text-outline font-bold">Z</span>
+                                <span class="text-primary font-bold" id="ws-tcp-z">300.0</span>
+                            </div>
+                            <div class="flex justify-between p-2 bg-white border border-outline-variant/40 rounded-xl">
+                                <span class="text-outline font-bold">Reach</span>
+                                <span class="text-secondary font-bold" id="ws-tcp-dist">335.4 mm</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                
+                <!-- Action trigger -->
+                <div class="border-t border-outline-variant pt-stack-lg mt-6 bg-surface-container-low p-4 rounded-xl">
+                    <button onclick="triggerMonteCarloWorkspace()" class="w-full py-3 bg-primary text-on-primary font-label-md rounded-lg hover:brightness-95 active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2 font-bold">
+                        <span class="material-symbols-outlined text-lg">rocket_launch</span>
+                        Generate Point Cloud
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- View 3: PATH PLANNING CONTROL PANEL -->
+        <aside id="panel-path" class="w-[400px] h-full bg-white border-l border-outline-variant flex flex-col z-30 shadow-2xl right-panel-ctrl print-full-width hidden">
+            <div class="p-stack-lg flex flex-col h-full">
+                <header class="mb-4">
+                    <h2 class="font-headline-md text-headline-md text-on-surface mb-1">Path Planning</h2>
+                    <p class="text-on-surface-variant font-body-md text-sm">Calculate spline trajectories</p>
+                </header>
+                <div class="flex-1 overflow-y-auto no-scrollbar space-y-4">
+                    
+                    <!-- Path Points Config -->
+                    <section class="space-y-3 bg-surface-container-low p-4 rounded-xl border border-outline-variant/30">
+                        <h3 class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider font-bold">Interpolation Parameters</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="space-y-1">
+                                <label class="text-[10px] text-outline font-bold">START X</label>
+                                <input id="path-start-x" class="w-full bg-white border border-outline-variant/30 rounded-lg px-2 py-1.5 font-data-sm text-xs outline-none" type="number" value="-100"/>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] text-outline font-bold">GOAL X</label>
+                                <input id="path-goal-x" class="w-full bg-white border border-outline-variant/30 rounded-lg px-2 py-1.5 font-data-sm text-xs outline-none" type="number" value="100"/>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] text-outline font-bold">START Y</label>
+                                <input id="path-start-y" class="w-full bg-white border border-outline-variant/30 rounded-lg px-2 py-1.5 font-data-sm text-xs outline-none" type="number" value="100"/>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] text-outline font-bold">GOAL Y</label>
+                                <input id="path-goal-y" class="w-full bg-white border border-outline-variant/30 rounded-lg px-2 py-1.5 font-data-sm text-xs outline-none" type="number" value="200"/>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] text-outline font-bold">START Z</label>
+                                <input id="path-start-z" class="w-full bg-white border border-outline-variant/30 rounded-lg px-2 py-1.5 font-data-sm text-xs outline-none" type="number" value="200"/>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] text-outline font-bold">GOAL Z</label>
+                                <input id="path-goal-z" class="w-full bg-white border border-outline-variant/30 rounded-lg px-2 py-1.5 font-data-sm text-xs outline-none" type="number" value="300"/>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Interpolation Curve Type selection -->
+                    <section class="space-y-2">
+                        <label class="font-label-sm text-[11px] text-on-surface-variant block uppercase tracking-wider font-bold">Trajectory Spline Algorithm</label>
+                        <select id="path-algorithm" class="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-4 py-2 font-label-md outline-none">
+                            <option value="linear">Linear Cartesian Path</option>
+                            <option value="cubic">Cubic Spline Joint Path</option>
+                            <option value="quintic">Quintic Spline (Zero Jolt) Joint Path</option>
+                        </select>
+                    </section>
+
+                    <!-- Industrial Scenarios Quick Presets -->
+                    <section class="space-y-2">
+                        <label class="font-label-sm text-[11px] text-on-surface-variant block uppercase tracking-wider font-bold">Industrial Preset Scenarios</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="runScenario('welding')" class="p-2 border border-primary/20 text-primary hover:bg-primary/5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-sm">local_fire_department</span> Welding Tracing
+                            </button>
+                            <button onclick="runScenario('pickplace')" class="p-2 border border-secondary/20 text-secondary hover:bg-secondary/5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1">
+                                <span class="material-symbols-outlined text-sm">unarchive</span> Pick & Place
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Live Dynamic Plot Graph Panel -->
+                    <section class="space-y-2 border-t border-outline-variant/50 pt-3">
+                        <div class="flex justify-between items-center">
+                            <label class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider font-bold">Joint Trajectory Graph</label>
+                            <span class="text-[9px] font-bold text-primary tracking-wide uppercase px-2 py-0.5 bg-primary/10 rounded">Position vs Velocity vs Accel</span>
+                        </div>
+                        <!-- HTML5 2D Canvas plot graph -->
+                        <div class="border border-outline-variant/20 rounded-xl overflow-hidden bg-surface-container-lowest p-2 h-36">
+                            <canvas id="path-plot-canvas" class="w-full h-full"></canvas>
+                        </div>
+                    </section>
+                </div>
+                
+                <!-- Compute / Run animation -->
+                <div class="border-t border-outline-variant pt-stack-lg mt-4 flex gap-4">
+                    <button id="run-path-btn" onclick="executeTrajectoryAnimation()" class="flex-1 bg-secondary text-on-primary font-label-md h-12 rounded-xl hover:bg-secondary-container shadow-lg shadow-secondary/15 active:scale-[0.98] transition-all flex items-center justify-center gap-1 font-bold">
+                        <span class="material-symbols-outlined text-lg">play_circle</span>
+                        Animate Path
+                    </button>
+                    <button onclick="clearPlannedPath()" class="w-12 border border-outline text-on-surface h-12 rounded-xl hover:bg-surface-container transition-all flex items-center justify-center" title="Reset Path">
+                        <span class="material-symbols-outlined">delete_sweep</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- View 4: FULL ROBOT LIBRARY (CATALOGUE) VIEW PANEL -->
+        <div id="panel-library" class="flex-1 overflow-y-auto w-full h-full bg-surface hidden relative z-20">
+            <div class="p-lg max-w-7xl mx-auto min-h-screen">
+                <!-- Header -->
+                <header class="flex flex-col md:flex-row md:items-end justify-between mb-xl gap-md pt-8">
+                    <div>
+                        <div class="flex items-center gap-sm mb-xs">
+                            <span class="h-1.5 w-10 bg-primary rounded-full"></span>
+                            <span class="font-label-caps text-label-caps text-primary tracking-widest uppercase text-xs font-bold">System Assets</span>
+                        </div>
+                        <h1 class="font-headline-lg text-headline-lg text-on-surface mt-2 font-black">Robot Library Catalog</h1>
+                        <p class="text-on-surface-variant max-w-lg mt-2 text-body-md">Browse and deploy standard industrial kinematics configurations for high-fidelity interactive simulation.</p>
+                    </div>
+                    <!-- Filter Bar -->
+                    <div class="flex gap-1 items-center bg-white p-1.5 rounded-xl border border-surface-container-high shadow-sm">
+                        <button id="lib-filter-all" onclick="filterLibrary('all')" class="bg-primary text-white px-4 py-2 rounded-lg font-label-caps text-xs font-bold shadow-sm">ALL TYPES</button>
+                        <button id="lib-filter-serial" onclick="filterLibrary('serial')" class="text-on-surface-variant hover:bg-surface-container-low px-4 py-2 rounded-lg font-label-caps text-xs font-semibold transition-all">SERIAL</button>
+                        <button id="lib-filter-parallel" onclick="filterLibrary('parallel')" class="text-on-surface-variant hover:bg-surface-container-low px-4 py-2 rounded-lg font-label-caps text-xs font-semibold transition-all">PARALLEL</button>
+                    </div>
+                </header>
+                <!-- Library Cards Grid -->
+                <div id="library-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-lg pb-xl">
+                    <!-- Cartesian robot -->
+                    <div class="custom-card rounded-xxxl overflow-hidden flex flex-col group lib-card-item" data-type="serial">
+                        <div class="relative h-56 bg-surface-container-low overflow-hidden">
+                            <img alt="Cartesian (XYZ)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrO3bVkdarQhvLx4Q8rgJd_CT6PPijkUQpOt0QOC-Y95FaDZSHnFINgu2Q-fJCReAVcoHc335EmBxZIC-l77AL2_YkpybCM5mvO5_gB8sJNCtgtrWa6xlyEx6Edxgl0YpwkG-MamYGAneDUetpDU1hVlcI7g_2L7iY1Ju_t1csJtg8mz4Os2hg5oxcZL_EM78yZv2U-9YkqFNUOqqBRg583kfNZNxopVQoNot-Bz4kN9jp1juKl_XxsyvHZj1Zp1L1-6AhNwNoTQ"/>
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+                                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                                <span class="font-data-sm text-[11px] font-bold text-on-surface">3-AXIS</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-headline-md text-lg text-on-surface group-hover:text-primary transition-colors font-bold">Cartesian Robot (XYZ)</h3>
+                                <span class="font-label-caps text-[10px] bg-secondary-container/20 text-on-secondary-container px-2 py-0.5 rounded-full border border-secondary-container/30 uppercase font-bold">Serial</span>
+                            </div>
+                            <p class="text-on-surface-variant text-body-md mb-4 text-xs line-clamp-2">Standard gantry-style configuration with 3 linear axes. Ideal for high-precision pick and place, CNC, and linear automated lines.</p>
+                            <div class="grid grid-cols-2 gap-4 mb-4 border-y border-surface-container-high py-4">
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">DOF CONFIG</p>
+                                    <p class="font-data-lg text-xs text-primary font-bold">3 x Linear Link</p>
+                                </div>
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">PRIMARY APP</p>
+                                    <p class="font-data-lg text-xs text-on-surface font-semibold">Gantry Assembly</p>
+                                </div>
+                            </div>
+                            <button onclick="deployRobotModel('cartesian')" class="w-full bg-surface-container-low hover:bg-primary hover:text-white text-on-surface py-3 rounded-xl font-label-md text-xs font-bold transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                                OPEN SIMULATOR <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SCARA robot -->
+                    <div class="custom-card rounded-xxxl overflow-hidden flex flex-col group lib-card-item" data-type="serial">
+                        <div class="relative h-56 bg-surface-container-low overflow-hidden">
+                            <img alt="SCARA (4 DOF)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLi6xG8gGxAxKt6SkwFUmvE3GNgwqNKivifsj-4f91--kntCAPCG1eovd9ROLpAcsdnFV0gKHmyagrJOYsx4L_THdc8ikarH3bH9fvFf-I2fpaO0LdpwUfO6C9A_MK_4WemVY_pgSbVbMSHKh1lUNsOMiGHsSkEFg3LRiYu1q-yLBWNs2cenBziaSv7QBQKnaVdallNOTKj4H727nBb7xSCf710v1xxt3Wl_OaFQj0fNVvihDC66TB2L8_kh2zAtDwcATuuAdV7g"/>
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+                                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                                <span class="font-data-sm text-[11px] font-bold text-on-surface">4-AXIS</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-headline-md text-lg text-on-surface group-hover:text-primary transition-colors font-bold">SCARA Robot (4 DOF)</h3>
+                                <span class="font-label-caps text-[10px] bg-tertiary-container/10 text-tertiary px-2 py-0.5 rounded-full border border-tertiary/20 uppercase font-bold">Hybrid</span>
+                            </div>
+                            <p class="text-on-surface-variant text-body-md mb-4 text-xs line-clamp-2">Selective Compliance Assembly Robot Arm. Exceptionally fast for small component pick & place, vertical insertions, and packaging.</p>
+                            <div class="grid grid-cols-2 gap-4 mb-4 border-y border-surface-container-high py-4">
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">DOF CONFIG</p>
+                                    <p class="font-data-lg text-xs text-primary font-bold">3 Revolute / 1 Pris</p>
+                                </div>
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">PRIMARY APP</p>
+                                    <p class="font-data-lg text-xs text-on-surface font-semibold">Fast Picking</p>
+                                </div>
+                            </div>
+                            <button onclick="deployRobotModel('scara')" class="w-full bg-surface-container-low hover:bg-primary hover:text-white text-on-surface py-3 rounded-xl font-label-md text-xs font-bold transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                                OPEN SIMULATOR <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Articulated (Active model default) -->
+                    <div class="custom-card rounded-xxxl overflow-hidden flex flex-col group lib-card-item border-primary" data-type="serial">
+                        <div class="relative h-56 bg-surface-container-low overflow-hidden">
+                            <img alt="Articulated (6 DOF)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgBpPvCS-OI14hopfMCP8Q4hYt-Z3h21Y0ElYCk_6XYLBcCq9BuQG3a7Nk76uaMC4LQ8vmHy1Gnd6Csu9HATmDg7dNlyC3KnUHZg3cBhgbcH41BzR6vYlhEqzTKcZZu5bQVdcPAjvD9F68RptFgyXKTCjUU52VIPEpHZaKnQHB7E88UT1QQYyEd4EbAbHPcDnJoqN9_egC5-99XrGRQcTyntahroNrZVebWAHBvEwRUKrPkeKbZB7XqvfoQD7iWkw9PsBGAfaz9A"/>
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+                                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                                <span class="font-data-sm text-[11px] font-bold text-on-surface">6-AXIS</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-headline-md text-lg text-on-surface group-hover:text-primary transition-colors font-bold text-primary">Articulated Robot (6 DOF)</h3>
+                                <span class="font-label-caps text-[10px] bg-secondary-container/20 text-on-secondary-container px-2 py-0.5 rounded-full border border-secondary-container/30 uppercase font-bold">Serial</span>
+                            </div>
+                            <p class="text-on-surface-variant text-body-md mb-4 text-xs line-clamp-2">Standard industrial multi-link arm with human-like flexibility. High capability for complex welding, painting, and assembly.</p>
+                            <div class="grid grid-cols-2 gap-4 mb-4 border-y border-surface-container-high py-4">
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">DOF CONFIG</p>
+                                    <p class="font-data-lg text-xs text-primary font-bold">6 x Revolute Joint</p>
+                                </div>
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">PRIMARY APP</p>
+                                    <p class="font-data-lg text-xs text-on-surface font-semibold">Welding & Painting</p>
+                                </div>
+                            </div>
+                            <button onclick="deployRobotModel('articulated')" class="w-full bg-primary hover:bg-primary-container text-white py-3 rounded-xl font-label-md text-xs font-bold transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                                DEPLOYED & SIMULATING <span class="material-symbols-outlined text-[18px]">done</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Delta Robot -->
+                    <div class="custom-card rounded-xxxl overflow-hidden flex flex-col group lib-card-item" data-type="parallel">
+                        <div class="relative h-56 bg-surface-container-low overflow-hidden">
+                            <img alt="Delta Robot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6q13JoiqsfwgnjtdHtfNSsGyCD2bbJI9NBytLloNWONFRDipMyPJv9CQExU7LOQdsLLiXtgIPtUDmZe4yEU_zwvUUprT2QHZj8MaXXsZxSz8e4pF8K6DooTWFg_xL7ryLMPH7SMRljAnnlawwjx_Jgo1geC16nXh8dMibRJYPqRv5Wgk8mUr1y5sPjeU2jLbkadBiwBsxxx8d_wsryisWcST82B13Oof3pjos3wOdUPMJoXlSpLEJGkuBeTpmEGcCJK3f5PS0FQ"/>
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+                                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                                <span class="font-data-sm text-[11px] font-bold text-on-surface">3-AXIS</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-headline-md text-lg text-on-surface group-hover:text-primary transition-colors font-bold">Delta Spider Robot</h3>
+                                <span class="font-label-caps text-[10px] bg-tertiary-container/10 text-tertiary px-2 py-0.5 rounded-full border border-tertiary/20 uppercase font-bold">Parallel</span>
+                            </div>
+                            <p class="text-on-surface-variant text-body-md mb-4 text-xs line-clamp-2">High-speed parallel coordinate configuration. Excels at ultra-high-speed packing and sorting of light products.</p>
+                            <div class="grid grid-cols-2 gap-4 mb-4 border-y border-surface-container-high py-4">
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">DOF CONFIG</p>
+                                    <p class="font-data-lg text-xs text-primary font-bold">3 x Parallel Link</p>
+                                </div>
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">PRIMARY APP</p>
+                                    <p class="font-data-lg text-xs text-on-surface font-semibold">High-speed Sorting</p>
+                                </div>
+                            </div>
+                            <button onclick="deployRobotModel('delta')" class="w-full bg-surface-container-low hover:bg-primary hover:text-white text-on-surface py-3 rounded-xl font-label-md text-xs font-bold transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                                OPEN SIMULATOR <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cylindrical -->
+                    <div class="custom-card rounded-xxxl overflow-hidden flex flex-col group lib-card-item" data-type="serial">
+                        <div class="relative h-56 bg-surface-container-low overflow-hidden">
+                            <img alt="Cylindrical Robot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6_rUyX605b0tKaGSzFvvaukPak41EQXmAGGQ18ib8IJOFs76XURSfzLW9h6R01nw2pvJbocTu3-ydDCL3wZTR3Ol8AwJB5oom-VlTuPRNPNzmD9tgZ7DR4lmBjysZHk_N98UYnygnJoqHa2amZJwRJi62bmW9Vy-lhFWZ7tDXlrb4NrHx5C3IonADU8Qopus05aPHZW5H1HLoNOgaL0YXorl9MEhoNaWUjt80RWHdeK2YyKS9nM_iko_oAPO3yfGQHcy2IesTDA"/>
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+                                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                                <span class="font-data-sm text-[11px] font-bold text-on-surface">3-AXIS</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-headline-md text-lg text-on-surface group-hover:text-primary transition-colors font-bold">Cylindrical Robot</h3>
+                                <span class="font-label-caps text-[10px] bg-secondary-container/20 text-on-secondary-container px-2 py-0.5 rounded-full border border-secondary-container/30 uppercase font-bold">Serial</span>
+                            </div>
+                            <p class="text-on-surface-variant text-body-md mb-4 text-xs line-clamp-2">Rotary base with two linear axes, tracing a cylindrical working boundary. Specialised for machine tool loading operations.</p>
+                            <div class="grid grid-cols-2 gap-4 mb-4 border-y border-surface-container-high py-4">
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">DOF CONFIG</p>
+                                    <p class="font-data-lg text-xs text-primary font-bold">1 Rotational / 2 Lin</p>
+                                </div>
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">PRIMARY APP</p>
+                                    <p class="font-data-lg text-xs text-on-surface font-semibold">Machine CNC Loading</p>
+                                </div>
+                            </div>
+                            <button onclick="deployRobotModel('cylindrical')" class="w-full bg-surface-container-low hover:bg-primary hover:text-white text-on-surface py-3 rounded-xl font-label-md text-xs font-bold transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                                OPEN SIMULATOR <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Spherical -->
+                    <div class="custom-card rounded-xxxl overflow-hidden flex flex-col group lib-card-item" data-type="polar">
+                        <div class="relative h-56 bg-surface-container-low overflow-hidden">
+                            <img alt="Spherical Robot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-nnv6aXHUgYiW3QgrllSYh5B3A-H6QsREzym4Yv7paAYHhoPRItcCejq_alr4v_ugmueISpC2wZLVW-5CkRXoXXJjv1xWlJzOWyum9HwvswC_aQM9oNBjR7OR7DRk94k8pVtS_z3n8z-vs7fB1TxdWW804WH8CppFVcvV2aevteF6DD1HJLOIlrOyTz_W_K04eW2V5BTjAsFk-H_2q2CJuphJ2xf708KF2Wp71oYSVY4jBN7wiRTH6ikgZfIa3UFyGjloqgB2jw"/>
+                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+                                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                                <span class="font-data-sm text-[11px] font-bold text-on-surface">3-AXIS</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-headline-md text-lg text-on-surface group-hover:text-primary transition-colors font-bold">Spherical Robot (Polar)</h3>
+                                <span class="font-label-caps text-[10px] bg-primary-container/10 text-primary px-2 py-0.5 rounded-full border border-primary/20 uppercase font-bold">Polar</span>
+                            </div>
+                            <p class="text-on-surface-variant text-body-md mb-4 text-xs line-clamp-2">Two rotary joints and one telescoping linear joint. Historical precursor to modern industrial arms, used in casting.</p>
+                            <div class="grid grid-cols-2 gap-4 mb-4 border-y border-surface-container-high py-4">
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">DOF CONFIG</p>
+                                    <p class="font-data-lg text-xs text-primary font-bold">2 Rotational / 1 Lin</p>
+                                </div>
+                                <div>
+                                    <p class="font-label-caps text-[9px] text-outline uppercase tracking-wider mb-1 font-bold">PRIMARY APP</p>
+                                    <p class="font-data-lg text-xs text-on-surface font-semibold">Polar Workspace Handling</p>
+                                </div>
+                            </div>
+                            <button onclick="deployRobotModel('spherical')" class="w-full bg-surface-container-low hover:bg-primary hover:text-white text-on-surface py-3 rounded-xl font-label-md text-xs font-bold transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                                OPEN SIMULATOR <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Library Footer -->
+            <footer class="flex justify-between items-center px-lg py-6 w-full bg-white border-t border-surface-container-high mt-auto">
+                <div class="flex items-center gap-md">
+                    <span class="font-headline-md text-[18px] text-primary font-black">Robotika</span>
+                    <span class="font-data-sm text-data-sm text-outline">© 2026 Robotika Industrial Systems</span>
+                </div>
+                <div class="flex gap-lg">
+                    <a class="font-data-sm text-data-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Privacy Policy</a>
+                    <a class="font-data-sm text-data-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Terms of Service</a>
+                </div>
+            </footer>
+        </div>
+
+        <!-- View 5: DOCUMENTATION VIEW PANEL -->
+        <div id="panel-docs" class="flex-1 overflow-y-auto w-full h-full bg-surface hidden relative z-20">
+            <div class="p-lg max-w-4xl mx-auto py-12">
+                <header class="mb-8">
+                    <div class="flex items-center gap-sm mb-xs">
+                        <span class="h-1.5 w-10 bg-primary rounded-full"></span>
+                        <span class="font-label-caps text-label-caps text-primary tracking-widest uppercase text-xs font-bold">Academic Reference</span>
+                    </div>
+                    <h1 class="font-headline-lg text-3xl text-on-surface mt-2 font-black">Robotics Kinematics Manual</h1>
+                    <p class="text-on-surface-variant text-body-lg mt-2">Comprehensive mathematical formulas and specifications of the Lumina Precision simulator.</p>
+                </header>
+
+                <div class="space-y-8 text-on-surface-variant">
+                    <section class="bg-white p-6 rounded-2xl border border-outline-variant/30 shadow-sm space-y-4">
+                        <h2 class="text-xl font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">functions</span>
+                            1. Forward Kinematics (Denavit-Hartenberg Convention)
+                        </h2>
+                        <p class="text-sm">Forward kinematics (FK) computes the homogeneous matrix transformation $T$ mapping the robot coordinates from local tool center point frame (TCP) back to the base reference coordinates.</p>
+                        <p class="text-sm">Each joint $i$ defines a local coordinate transformation matrix $A_i$ dependent on four structural DH Parameters:</p>
+                        <div class="bg-surface-container-low p-4 rounded-xl font-data-sm text-xs leading-relaxed space-y-2 border border-outline-variant/20">
+                            <p class="font-bold text-primary">DH Transformation Matrix Transformation Equation:</p>
+                            <p class="text-center font-bold text-sm text-on-surface bg-white/70 py-2 rounded border my-2">
+                                A_i = Rot_z(θ_i) * Trans_z(d_i) * Trans_x(a_i) * Rot_x(α_i)
+                            </p>
+                            <p>Which expands into the standard matrix format:</p>
+                            <pre class="overflow-x-auto p-2 bg-slate-900 text-green-400 rounded-lg">
+[ cos(θ)   -sin(θ)·cos(α)   sin(θ)·sin(α)   a·cos(θ) ]
+[ sin(θ)    cos(θ)·cos(α)  -cos(θ)·sin(α)   a·sin(θ) ]
+[   0          sin(α)          cos(α)          d     ]
+[   0            0               0             1     ]</pre>
+                        </div>
+                    </section>
+
+                    <section class="bg-white p-6 rounded-2xl border border-outline-variant/30 shadow-sm space-y-4">
+                        <h2 class="text-xl font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">calculate</span>
+                            2. Numerical Inverse Kinematics (CCD Solver)
+                        </h2>
+                        <p class="text-sm">Inverse Kinematics (IK) computes appropriate set of joint parameters necessary to locate the robot tip at desired coordinates $(X, Y, Z)$ in 3D cartesian coordinates.</p>
+                        <p class="text-sm">Our real-time engine implements the highly convergent <strong>Cyclic Coordinate Descent (CCD)</strong> algorithm. This algorithm traverses backwards from wrist joints down to the base joint, minimizing the coordinate error vector iteratively:</p>
+                        <div class="bg-surface-container-low p-4 rounded-xl font-data-sm text-xs leading-relaxed border border-outline-variant/20">
+                            <p class="font-bold text-primary">CCD Angular Step Rotation Vector Update Formula:</p>
+                            <p class="text-center font-bold text-sm text-on-surface bg-white/70 py-2 rounded border my-2">
+                                φ = arccos( (V_c · V_t) / (|V_c| · |V_t|) )
+                            </p>
+                            <p>Where:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>$V_c$ is the vector pointing from active joint origin to active TCP location.</li>
+                                <li>$V_t$ is the vector pointing from active joint origin to goal coordinate position target.</li>
+                                <li>Joint angles are clamped inside safe limits: $J_i^{min} \le \theta_i \le J_i^{max}$.</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="bg-white p-6 rounded-2xl border border-outline-variant/30 shadow-sm space-y-4">
+                        <h2 class="text-xl font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">scatter_plot</span>
+                            3. Workspace Monte Carlo Sampling
+                        </h2>
+                        <p class="text-sm">The total envelope workspace boundary represents all coordinate points in 3D space which are physically within the reach range of the robot gripper.</p>
+                        <p class="text-sm">We compute this dynamically using a Monte Carlo probabilistic model generator. Given random joints rotations vectors generated evenly:</p>
+                        <div class="bg-surface-container-low p-4 rounded-xl font-data-sm text-xs border border-outline-variant/20">
+                            <p class="text-center font-bold text-sm text-on-surface bg-white/70 py-2 rounded border mb-2">
+                                θ_i = J_i^min + r_i · (J_i^max - J_i^min) ,  r_i ∈ [0, 1]
+                            </p>
+                            <p class="text-xs">A set of $N = 1000$ to $5000$ points are computed using Forward Kinematics (FK). Reach volume $V$ is approximated by measuring the coordinates limits:</p>
+                            <p class="text-center font-bold text-on-surface bg-white/70 py-1.5 border rounded mt-2">
+                                Volume V ≈ (4/3)·π·R_max³ · (Valid Points / Total Sampled)
+                            </p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- View 6: HOME / DASHBOARD VIEW PANEL -->
+        <div id="panel-home" class="flex-1 overflow-y-auto w-full h-full bg-surface hidden relative z-20">
+            <div class="p-lg max-w-7xl mx-auto pt-8 pb-16">
+                <header class="mb-8">
+                    <div class="flex items-center gap-sm mb-xs">
+                        <span class="h-1.5 w-10 bg-primary rounded-full"></span>
+                        <span class="font-label-caps text-label-caps text-primary tracking-widest uppercase text-xs font-bold">Industrial Control Center</span>
+                    </div>
+                    <h1 class="font-headline-lg text-4xl text-on-surface mt-2 font-black tracking-tight">Robotika Dashboard</h1>
+                    <p class="text-on-surface-variant max-w-xl mt-2 text-body-md">Real-time status overview, diagnostic feeds, and gantry assets analytics of active simulation structures.</p>
+                </header>
+
+                <!-- Status Bento Layout -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mb-8">
+                    <div class="pro-card p-6 rounded-2xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="font-label-md text-on-surface-variant font-bold">Kinematic Solver Engine</span>
+                            <span class="px-2 py-0.5 bg-secondary-container/20 text-secondary border border-secondary-container/30 text-[10px] font-bold rounded-full uppercase">Nominal</span>
+                        </div>
+                        <h3 class="text-3xl font-black text-on-surface mb-2 font-data-sm">CCD Core v2.4</h3>
+                        <p class="text-xs text-on-surface-variant">Active numerical inverse kinematics matrices running on local client browser with sub-millisecond converge speeds.</p>
+                    </div>
+                    <div class="pro-card p-6 rounded-2xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="font-label-md text-on-surface-variant font-bold">Active Configuration</span>
+                            <span class="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold rounded-full uppercase">Active</span>
+                        </div>
+                        <h3 id="home-active-model-name" class="text-3xl font-black text-on-surface mb-2 font-data-sm">6 DOF Arm</h3>
+                        <p class="text-xs text-on-surface-variant">Default 6-Axis serial revolute configurations active. Current reach status: Nominal workspace tolerances.</p>
+                    </div>
+                    <div class="pro-card p-6 rounded-2xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="font-label-md text-on-surface-variant font-bold">Active Diagnostic Stream</span>
+                            <span class="px-2 py-0.5 bg-secondary/10 text-secondary border border-secondary/20 text-[10px] font-bold rounded-full uppercase">Connected</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-4xl text-secondary">memory</span>
+                            <div>
+                                <h4 class="text-lg font-bold text-on-surface leading-tight">60 FPS WebGL</h4>
+                                <p class="text-[11px] text-on-surface-variant">GPU-accelerated vector computations enabled. Vertex loading: Minimal</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Split section: Quick access to tools -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+                    <div class="pro-card p-6 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-on-surface mb-2 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">view_in_ar</span>
+                                Quick Deploy 3D Simulator
+                            </h3>
+                            <p class="text-xs text-on-surface-variant mb-6">Instantly open coordinate slider configurations, customize joints lengths offsets values dynamically, and simulate Denavit-Hartenberg transformation matrices in an interactive three-dimensional viewer.</p>
+                        </div>
+                        <button onclick="switchRoute('simulator')" class="w-full bg-primary text-on-primary py-3 rounded-xl font-label-md text-xs font-bold hover:brightness-105 transition-all flex items-center justify-center gap-1 shadow-md shadow-primary/20">
+                            Launch Simulator View <span class="material-symbols-outlined text-sm">rocket_launch</span>
+                        </button>
+                    </div>
+
+                    <div class="pro-card p-6 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-on-surface mb-2 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-secondary">route</span>
+                                Spline Path Planning & Scenarios
+                            </h3>
+                            <p class="text-xs text-on-surface-variant mb-6">Test cubic and quintic joint spline trajectories calculations. Run industrial presets like welding tracing paths with dynamic graphs plotting velocity and acceleration values in real-time.</p>
+                        </div>
+                        <button onclick="switchRoute('path')" class="w-full border border-secondary text-secondary py-3 rounded-xl font-label-md text-xs font-bold hover:bg-secondary/5 transition-all flex items-center justify-center gap-1">
+                            Plan Trajectory Paths <span class="material-symbols-outlined text-sm">trending_up</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer Status Bar -->
+    <footer class="fixed bottom-0 left-0 w-full flex justify-between items-center px-container-margin py-2 z-50 bg-white border-t border-outline-variant">
+        <div class="flex items-center gap-stack-lg">
+            <span class="font-label-sm text-on-surface-variant text-[11px]">© 2026 Robotika Industrial</span>
+            <div class="flex items-center gap-2 bg-secondary/10 px-3 py-1 rounded-full border border-secondary/20">
+                <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                <span class="text-[11px] font-bold text-secondary uppercase">System: Nominal</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-on-surface-variant text-[16px]">memory</span>
+                <span class="font-data-sm text-[11px] text-on-surface-variant">RAM allocation: Sub-millisecond convergence</span>
+            </div>
+        </div>
+        <div class="flex gap-stack-lg items-center text-[11px]">
+            <a class="font-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Privacy</a>
+            <a class="font-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Terms</a>
+            <a class="font-label-sm text-on-surface-variant hover:text-primary transition-colors cursor-pointer" onclick="switchRoute('docs')">Docs</a>
+        </div>
+    </footer>
+
+    <!-- App Logic Scripts -->
+    <script src="kinematics.js"></script>
+    <script src="visualizer.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

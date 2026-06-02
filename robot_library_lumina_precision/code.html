@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Robot Library | Robotika</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-card {
+            background: #ffffff;
+            border: 1px solid #e6e8eb;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .custom-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border-color: #0066ff;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f7f9fc;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d8dadd;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0066ff;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#006278",
+                      "surface": "#f7f9fc",
+                      "secondary": "#006e1c",
+                      "on-primary-container": "#f8f7ff",
+                      "surface-container-high": "#e6e8eb",
+                      "on-secondary-fixed-variant": "#005313",
+                      "surface-tint": "#0054d6",
+                      "on-primary-fixed": "#001849",
+                      "primary-fixed": "#dae1ff",
+                      "inverse-primary": "#b3c5ff",
+                      "outline-variant": "#c2c6d8",
+                      "surface-dim": "#d8dadd",
+                      "secondary-container": "#60fe6c",
+                      "secondary-fixed-dim": "#42e355",
+                      "on-surface-variant": "#424656",
+                      "on-tertiary": "#ffffff",
+                      "surface-container": "#eceef1",
+                      "on-tertiary-fixed-variant": "#004e60",
+                      "on-background": "#191c1e",
+                      "primary-fixed-dim": "#b3c5ff",
+                      "on-primary-fixed-variant": "#003fa4",
+                      "inverse-on-surface": "#eff1f4",
+                      "primary": "#0050cb",
+                      "tertiary-fixed-dim": "#4cd6ff",
+                      "inverse-surface": "#2d3133",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed": "#b7eaff",
+                      "secondary-fixed": "#70ff76",
+                      "on-tertiary-fixed": "#001f28",
+                      "on-secondary-fixed": "#002204",
+                      "on-surface": "#191c1e",
+                      "on-tertiary-container": "#effaff",
+                      "on-error": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "outline": "#727687",
+                      "surface-container-highest": "#e0e3e6",
+                      "on-error-container": "#93000a",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#007c98",
+                      "primary-container": "#0066ff",
+                      "surface-variant": "#e0e3e6",
+                      "surface-container-low": "#f2f4f7",
+                      "on-secondary-container": "#00731d",
+                      "background": "#f7f9fc",
+                      "surface-bright": "#f7f9fc"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "xxl": "1rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "gutter": "16px",
+                      "xl": "32px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "base": "8px",
+                      "panel-width": "280px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "data-lg": ["JetBrains Mono"],
+                      "headline-lg": ["Inter"],
+                      "data-sm": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "data-lg": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "data-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-primary/20">
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-full flex justify-between items-center px-lg h-16 z-50 bg-white/90 border-b border-surface-container-high backdrop-blur-md">
+<div class="flex items-center gap-xl">
+<span class="font-headline-md text-headline-md font-black text-primary tracking-tight">Robotika</span>
+<div class="hidden md:flex gap-lg">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all uppercase" href="#">Simulation</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all uppercase" href="#">Hardware</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all uppercase" href="#">Cloud</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+<input class="bg-surface-container-low border border-outline-variant rounded-lg px-10 py-2 text-sm focus:border-primary focus:ring-4 focus:ring-primary/10 w-72 font-body-md transition-all outline-none" placeholder="Search systems..." type="text"/>
+</div>
+<button class="font-label-md text-label-md text-on-surface-variant hover:bg-surface-container px-3 py-2 rounded-lg transition-all">Export CSV</button>
+<button class="bg-primary hover:bg-primary-container text-white font-label-md text-label-md px-5 py-2 rounded-lg transition-all shadow-md hover:shadow-lg active:scale-95">Export PDF</button>
+<div class="flex gap-sm border-l border-surface-container-high ml-2 pl-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all p-2 rounded-full hover:bg-surface-container">notifications</button>
+<div class="h-9 w-9 rounded-full overflow-hidden border-2 border-primary/20 p-0.5">
+<img alt="User Profile Avatar" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcLLv8mMIzETe9hUm8jqZRLBWmyqdcu9LlQk_am_X68M7YMxj9nNDJLaXnkcFEacXuvakQ26QEryCd0OJYHGIUO1ssGoMnR-g2iqzdd02gA1Fqrc2hqWpIW6o3XuZvsNPQROGAmmTBqHO2hN37DqMTbB_MW07Eb0Z05PC2uTVuVUCWpVTl9j20JgdSC7jiByWT8puIin_G99i7PzUm5SDdYLsQk887ADvW5CwXeQ8ScolyHzaqIRUKqVqe581-R4yolRzUko-Jlg"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full flex flex-col z-40 bg-white w-panel-width border-r border-surface-container-high transition-all duration-300">
+<div class="pt-20 px-md flex-1 overflow-y-auto">
+<div class="mb-lg space-y-1">
+<!-- Nav Item: Home -->
+<a class="flex items-center gap-md p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 group active:scale-95" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<!-- Nav Item: Robot Library (ACTIVE) -->
+<a class="flex items-center gap-md p-3 rounded-xl text-primary bg-primary/5 border border-primary/10 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+<span class="font-label-md text-label-md font-bold">Robot Library</span>
+</a>
+<a class="flex items-center gap-md p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 group active:scale-95" href="#">
+<span class="material-symbols-outlined">view_in_ar</span>
+<span class="font-label-md text-label-md">Simulator</span>
+</a>
+<a class="flex items-center gap-md p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 group active:scale-95" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-label-md text-label-md">Matrix Playground</span>
+</a>
+<a class="flex items-center gap-md p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 group active:scale-95" href="#">
+<span class="material-symbols-outlined">workspaces</span>
+<span class="font-label-md text-label-md">Workspace</span>
+</a>
+<a class="flex items-center gap-md p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 group active:scale-95" href="#">
+<span class="material-symbols-outlined">route</span>
+<span class="font-label-md text-label-md">Path Planning</span>
+</a>
+<a class="flex items-center gap-md p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-all duration-200 group active:scale-95" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-md text-label-md">Documentation</span>
+</a>
+</div>
+</div>
+<!-- Footer Tabs -->
+<div class="p-md border-t border-surface-container-high space-y-1">
+<a class="flex items-center gap-md p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-md p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="pl-[280px] pt-16 min-h-screen bg-surface">
+<div class="p-lg max-w-7xl mx-auto">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row md:items-end justify-between mb-xl gap-md pt-8">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="h-1.5 w-10 bg-primary rounded-full"></span>
+<span class="font-label-caps text-label-caps text-primary tracking-widest uppercase">System Assets</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mt-2">Robot Library</h1>
+<p class="text-on-surface-variant max-w-lg mt-2 text-body-md">Browse and deploy standard industrial kinematics configurations for high-fidelity physics simulation.</p>
+</div>
+<!-- Filter Bar -->
+<div class="flex gap-1 items-center bg-white p-1.5 rounded-xl border border-surface-container-high shadow-sm">
+<button class="bg-primary text-white px-4 py-2 rounded-lg font-label-caps text-label-caps shadow-sm">ALL TYPES</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low px-4 py-2 rounded-lg font-label-caps text-label-caps transition-all">SERIAL</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low px-4 py-2 rounded-lg font-label-caps text-label-caps transition-all">PARALLEL</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low px-4 py-2 rounded-lg font-label-caps text-label-caps transition-all">CYLINDRICAL</button>
+<div class="h-6 w-px bg-surface-container-high mx-2"></div>
+<button class="material-symbols-outlined text-on-surface-variant p-2 rounded-lg hover:bg-surface-container-low">tune</button>
+</div>
+</header>
+<!-- Robot Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-lg pb-xl">
+<!-- Card 1: Cartesian -->
+<div class="custom-card rounded-xxl overflow-hidden flex flex-col group">
+<div class="relative h-56 bg-surface-container-low overflow-hidden">
+<img alt="Cartesian (XYZ)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrO3bVkdarQhvLx4Q8rgJd_CT6PPijkUQpOt0QOC-Y95FaDZSHnFINgu2Q-fJCReAVcoHc335EmBxZIC-l77AL2_YkpybCM5mvO5_gB8sJNCtgtrWa6xlyEx6Edxgl0YpwkG-MamYGAneDUetpDU1hVlcI7g_2L7iY1Ju_t1csJtg8mz4Os2hg5oxcZL_EM78yZv2U-9YkqFNUOqqBRg583kfNZNxopVQoNot-Bz4kN9jp1juKl_XxsyvHZj1Zp1L1-6AhNwNoTQ"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-data-sm text-[11px] font-bold text-on-surface">3-AXIS</span>
+</div>
+</div>
+<div class="p-md flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Cartesian (XYZ)</h3>
+<span class="font-label-caps text-[10px] bg-secondary-container/20 text-on-secondary-container px-2 py-0.5 rounded-full border border-secondary-container/30 uppercase">Serial</span>
+</div>
+<p class="text-on-surface-variant text-body-md mb-md line-clamp-2">Standard gantry-style configuration with 3 linear axes. Ideal for high-precision CNC and automated assembly lines.</p>
+<div class="grid grid-cols-2 gap-4 mb-md border-y border-surface-container-high py-4">
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">DOF CONFIG</p>
+<p class="font-data-lg text-data-lg text-primary">3 x Linear</p>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">PRIMARY APP</p>
+<p class="font-data-lg text-data-lg text-on-surface">Pick &amp; Place</p>
+</div>
+</div>
+<button class="w-full bg-surface-container-low hover:bg-primary hover:text-white text-on-surface py-3 rounded-xl font-label-md text-label-md transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                        OPEN SIMULATOR <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 2: SCARA -->
+<div class="custom-card rounded-xxl overflow-hidden flex flex-col group">
+<div class="relative h-56 bg-surface-container-low overflow-hidden">
+<img alt="SCARA (4 DOF)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLi6xG8gGxAxKt6SkwFUmvE3GNgwqNKivifsj-4f91--kntCAPCG1eovd9ROLpAcsdnFV0gKHmyagrJOYsx4L_THdc8ikarH3bH9fvFf-I2fpaO0LdpwUfO6C9A_MK_4WemVY_pgSbVbMSHKh1lUNsOMiGHsSkEFg3LRiYu1q-yLBWNs2cenBziaSv7QBQKnaVdallNOTKj4H727nBb7xSCf710v1xxt3Wl_OaFQj0fNVvihDC66TB2L8_kh2zAtDwcATuuAdV7g"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-data-sm text-[11px] font-bold text-on-surface">4-AXIS</span>
+</div>
+</div>
+<div class="p-md flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">SCARA (4 DOF)</h3>
+<span class="font-label-caps text-[10px] bg-tertiary-container/10 text-tertiary px-2 py-0.5 rounded-full border border-tertiary/20 uppercase">Hybrid</span>
+</div>
+<p class="text-on-surface-variant text-body-md mb-md line-clamp-2">Selective Compliance Assembly Robot Arm. Primarily used for small component assembly and vertical insertion.</p>
+<div class="grid grid-cols-2 gap-4 mb-md border-y border-surface-container-high py-4">
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">DOF CONFIG</p>
+<p class="font-data-lg text-data-lg text-primary">2-Rot / 1-Lin</p>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">PRIMARY APP</p>
+<p class="font-data-lg text-data-lg text-on-surface">Assembly</p>
+</div>
+</div>
+<button class="w-full bg-surface-container-low hover:bg-primary hover:text-white text-on-surface py-3 rounded-xl font-label-md text-label-md transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                        OPEN SIMULATOR <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 3: Articulated -->
+<div class="custom-card rounded-xxl overflow-hidden flex flex-col group">
+<div class="relative h-56 bg-surface-container-low overflow-hidden">
+<img alt="Articulated (6 DOF)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgBpPvCS-OI14hopfMCP8Q4hYt-Z3h21Y0ElYCk_6XYLBcCq9BuQG3a7Nk76uaMC4LQ8vmHy1Gnd6Csu9HATmDg7dNlyC3KnUHZg3cBhgbcH41BzR6vYlhEqzTKcZZu5bQVdcPAjvD9F68RptFgyXKTCjUU52VIPEpHZaKnQHB7E88UT1QQYyEd4EbAbHPcDnJoqN9_egC5-99XrGRQcTyntahroNrZVebWAHBvEwRUKrPkeKbZB7XqvfoQD7iWkw9PsBGAfaz9A"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-data-sm text-[11px] font-bold text-on-surface">6-AXIS</span>
+</div>
+</div>
+<div class="p-md flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Articulated (6 DOF)</h3>
+<span class="font-label-caps text-[10px] bg-secondary-container/20 text-on-secondary-container px-2 py-0.5 rounded-full border border-secondary-container/30 uppercase">Serial</span>
+</div>
+<p class="text-on-surface-variant text-body-md mb-md line-clamp-2">Human-like flexibility with 6 rotary joints. The gold standard for complex tasks in automotive and logistics.</p>
+<div class="grid grid-cols-2 gap-4 mb-md border-y border-surface-container-high py-4">
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">DOF CONFIG</p>
+<p class="font-data-lg text-data-lg text-primary">6 x Revolute</p>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">PRIMARY APP</p>
+<p class="font-data-lg text-data-lg text-on-surface">Welding</p>
+</div>
+</div>
+<button class="w-full bg-surface-container-low hover:bg-primary hover:text-white text-on-surface py-3 rounded-xl font-label-md text-label-md transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                        OPEN SIMULATOR <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 4: Delta -->
+<div class="custom-card rounded-xxl overflow-hidden flex flex-col group">
+<div class="relative h-56 bg-surface-container-low overflow-hidden">
+<img alt="Delta Robot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6q13JoiqsfwgnjtdHtfNSsGyCD2bbJI9NBytLloNWONFRDipMyPJv9CQExU7LOQdsLLiXtgIPtUDmZe4yEU_zwvUUprT2QHZj8MaXXsZxSz8e4pF8K6DooTWFg_xL7ryLMPH7SMRljAnnlawwjx_Jgo1geC16nXh8dMibRJYPqRv5Wgk8mUr1y5sPjeU2jLbkadBiwBsxxx8d_wsryisWcST82B13Oof3pjos3wOdUPMJoXlSpLEJGkuBeTpmEGcCJK3f5PS0FQ"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-data-sm text-[11px] font-bold text-on-surface">3+1 AXIS</span>
+</div>
+</div>
+<div class="p-md flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Delta Robot</h3>
+<span class="font-label-caps text-[10px] bg-tertiary-container/10 text-tertiary px-2 py-0.5 rounded-full border border-tertiary/20 uppercase">Parallel</span>
+</div>
+<p class="text-on-surface-variant text-body-md mb-md line-clamp-2">High-speed parallel kinematic robot. Excels at high-speed pick and place of lightweight objects.</p>
+<div class="grid grid-cols-2 gap-4 mb-md border-y border-surface-container-high py-4">
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">DOF CONFIG</p>
+<p class="font-data-lg text-data-lg text-primary">3 x Parallel</p>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">PRIMARY APP</p>
+<p class="font-data-lg text-data-lg text-on-surface">Packaging</p>
+</div>
+</div>
+<button class="w-full bg-surface-container-low hover:bg-primary hover:text-white text-on-surface py-3 rounded-xl font-label-md text-label-md transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                        OPEN SIMULATOR <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 5: Cylindrical -->
+<div class="custom-card rounded-xxl overflow-hidden flex flex-col group">
+<div class="relative h-56 bg-surface-container-low overflow-hidden">
+<img alt="Cylindrical Robot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6_rUyX605b0tKaGSzFvvaukPak41EQXmAGGQ18ib8IJOFs76XURSfzLW9h6R01nw2pvJbocTu3-ydDCL3wZTR3Ol8AwJB5oom-VlTuPRNPNzmD9tgZ7DR4lmBjysZHk_N98UYnygnJoqHa2amZJwRJi62bmW9Vy-lhFWZ7tDXlrb4NrHx5C3IonADU8Qopus05aPHZW5H1HLoNOgaL0YXorl9MEhoNaWUjt80RWHdeK2YyKS9nM_iko_oAPO3yfGQHcy2IesTDA"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-data-sm text-[11px] font-bold text-on-surface">3-AXIS</span>
+</div>
+</div>
+<div class="p-md flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Cylindrical</h3>
+<span class="font-label-caps text-[10px] bg-secondary-container/20 text-on-secondary-container px-2 py-0.5 rounded-full border border-secondary-container/30 uppercase">Serial</span>
+</div>
+<p class="text-on-surface-variant text-body-md mb-md line-clamp-2">Rotary base with two linear axes, forming a cylindrical workspace. Specialized for machine loading.</p>
+<div class="grid grid-cols-2 gap-4 mb-md border-y border-surface-container-high py-4">
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">DOF CONFIG</p>
+<p class="font-data-lg text-data-lg text-primary">1-Rot / 2-Lin</p>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">PRIMARY APP</p>
+<p class="font-data-lg text-data-lg text-on-surface">Grinding</p>
+</div>
+</div>
+<button class="w-full bg-surface-container-low hover:bg-primary hover:text-white text-on-surface py-3 rounded-xl font-label-md text-label-md transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                        OPEN SIMULATOR <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 6: Spherical -->
+<div class="custom-card rounded-xxl overflow-hidden flex flex-col group">
+<div class="relative h-56 bg-surface-container-low overflow-hidden">
+<img alt="Spherical Robot" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-nnv6aXHUgYiW3QgrllSYh5B3A-H6QsREzym4Yv7paAYHhoPRItcCejq_alr4v_ugmueISpC2wZLVW-5CkRXoXXJjv1xWlJzOWyum9HwvswC_aQM9oNBjR7OR7DRk94k8pVtS_z3n8z-vs7fB1TxdWW804WH8CppFVcvV2aevteF6DD1HJLOIlrOyTz_W_K04eW2V5BTjAsFk-H_2q2CJuphJ2xf708KF2Wp71oYSVY4jBN7wiRTH6ikgZfIa3UFyGjloqgB2jw"/>
+<div class="absolute top-4 left-4 bg-white/90 backdrop-blur shadow-sm rounded-full px-3 py-1.5 flex items-center gap-2 border border-surface-container-high">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-data-sm text-[11px] font-bold text-on-surface">3-AXIS</span>
+</div>
+</div>
+<div class="p-md flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Spherical</h3>
+<span class="font-label-caps text-[10px] bg-primary-container/10 text-primary px-2 py-0.5 rounded-full border border-primary/20 uppercase">Polar</span>
+</div>
+<p class="text-on-surface-variant text-body-md mb-md line-clamp-2">Two rotary axes and one linear axis creating a polar coordinate workspace. Used for heavy handling.</p>
+<div class="grid grid-cols-2 gap-4 mb-md border-y border-surface-container-high py-4">
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">DOF CONFIG</p>
+<p class="font-data-lg text-data-lg text-primary">2-Rot / 1-Lin</p>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider mb-1">PRIMARY APP</p>
+<p class="font-data-lg text-data-lg text-on-surface">Die Casting</p>
+</div>
+</div>
+<button class="w-full bg-surface-container-low hover:bg-primary hover:text-white text-on-surface py-3 rounded-xl font-label-md text-label-md transition-all flex items-center justify-center gap-2 group/btn shadow-sm">
+                        OPEN SIMULATOR <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Shell -->
+<footer class="flex justify-between items-center px-lg py-6 w-full bg-white border-t border-surface-container-high">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-[18px] text-primary font-black">Robotika</span>
+<span class="font-data-sm text-data-sm text-outline">© 2024 Robotika Industrial Systems</span>
+</div>
+<div class="flex gap-lg">
+<a class="font-data-sm text-data-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-data-sm text-data-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-data-sm text-data-sm text-on-surface-variant hover:text-primary transition-colors" href="#">API Docs</a>
+</div>
+</footer>
+</main>
+<script>
+    // Search highlight interaction
+    const searchInput = document.querySelector('input[type="text"]');
+    searchInput.addEventListener('focus', () => {
+        searchInput.parentElement.querySelector('.material-symbols-outlined').classList.add('text-primary');
+    });
+    searchInput.addEventListener('blur', () => {
+        searchInput.parentElement.querySelector('.material-symbols-outlined').classList.remove('text-primary');
+    });
+</script>
+</body></html>

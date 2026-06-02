@@ -1,0 +1,567 @@
+Berikut adalah Product Requirements Document (PRD) untuk Web App Simulator Robot Lengan yang dapat digunakan sebagai dasar pengembangan oleh tim software engineer, UI/UX designer, dan robotic engineer.
+
+PRODUCT REQUIREMENTS DOCUMENT (PRD)
+
+1. Nama Produk
+
+Robotika Simulator
+Interactive Web-Based Robotic Arm Simulation Platform
+
+⸻
+
+2. Latar Belakang
+
+Robotika merupakan salah satu bidang teknologi yang berkembang pesat di industri manufaktur, otomasi, pendidikan, kesehatan, dan penelitian.
+
+Namun banyak mahasiswa, pelajar, maupun masyarakat umum mengalami kesulitan memahami konsep:
+
+* Kinematika Robot
+* Matriks Transformasi
+* Derajat Kebebasan (DOF)
+* Forward Kinematics
+* Inverse Kinematics
+* Workspace Robot
+* Kontrol Gerakan Robot
+
+Karena membutuhkan perangkat keras robot yang mahal.
+
+Robotika Simulator hadir sebagai media pembelajaran berbasis web yang memungkinkan pengguna mempelajari berbagai jenis robot lengan secara interaktif tanpa membutuhkan robot fisik.
+
+⸻
+
+3. Tujuan Produk
+
+Menyediakan platform simulasi robot lengan berbasis web yang:
+
+1. Edukatif
+2. Interaktif
+3. Responsif
+4. Mudah digunakan
+5. Berbasis Python
+6. Dapat dijalankan melalui browser
+
+⸻
+
+4. Target Pengguna
+
+Primer
+
+* Mahasiswa Teknik Elektro
+* Mahasiswa Teknik Mesin
+* Mahasiswa Teknik Informatika
+* Mahasiswa Robotika
+
+Sekunder
+
+* Guru
+* Dosen
+* Peneliti
+* Penggemar robotika
+
+Tersier
+
+* Industri yang membutuhkan media pelatihan robotika
+
+⸻
+
+5. Teknologi yang Digunakan
+
+Backend
+
+Python
+
+Framework:
+
+* FastAPI
+
+Alternatif:
+
+* Django
+* Flask
+
+⸻
+
+Frontend
+
+* HTML5
+* CSS3
+* JavaScript
+
+Framework:
+
+* ReactJS
+
+Alternatif:
+
+* VueJS
+
+⸻
+
+Visualisasi 3D
+
+* Three.js
+
+Alternatif:
+
+* Babylon.js
+
+⸻
+
+Simulasi Robotik
+
+Python Libraries:
+
+* NumPy
+* SciPy
+* SymPy
+* Robotics Toolbox Python
+* SpatialMath
+* Matplotlib
+
+⸻
+
+Database
+
+* PostgreSQL
+
+Alternatif:
+
+* SQLite
+
+⸻
+
+6. Fitur Utama
+
+⸻
+
+Fitur 1
+
+Katalog Robot Lengan
+
+Menampilkan berbagai jenis robot:
+
+Cartesian Robot
+
+XYZ Axis
+
+SCARA Robot
+
+4 DOF
+
+Articulated Robot
+
+6 DOF
+
+Cylindrical Robot
+
+Spherical Robot
+
+Delta Robot
+
+Setiap robot menampilkan:
+
+* Deskripsi
+* Kelebihan
+* Kekurangan
+* Area aplikasi industri
+* Jumlah DOF
+* Workspace
+
+⸻
+
+Fitur 2
+
+Visualisasi 3D Robot
+
+User dapat:
+
+* Rotate
+* Pan
+* Zoom
+* Reset Camera
+
+Objek divisualisasikan secara real-time.
+
+⸻
+
+Fitur 3
+
+Forward Kinematics Simulator
+
+Input:
+
+* Panjang Link
+* Sudut Joint
+
+Output:
+
+* Posisi End Effector
+* Matriks Transformasi Homogen
+* Visualisasi Gerakan Robot
+
+⸻
+
+Fitur 4
+
+Inverse Kinematics Simulator
+
+Input:
+
+Posisi target:
+
+X, Y, Z
+
+Output:
+
+* Nilai joint
+* Solusi IK
+* Validasi apakah target dapat dicapai
+
+⸻
+
+Fitur 5
+
+Denavit-Hartenberg (DH) Parameter Simulator
+
+Input:
+
+Parameter	Keterangan
+a	Link Length
+alpha	Link Twist
+d	Link Offset
+theta	Joint Angle
+
+Output:
+
+* Matriks Transformasi
+* Posisi Robot
+* Workspace
+
+⸻
+
+Fitur 6
+
+Matrix Transformation Playground
+
+User dapat memasukkan:
+
+Matriks Rotasi
+
+Rx
+
+Ry
+
+Rz
+
+Matriks Translasi
+
+Tx
+
+Ty
+
+Tz
+
+Matriks Homogen
+
+4x4
+
+Output:
+
+* Visualisasi perubahan posisi robot
+* Animasi transformasi
+
+⸻
+
+Fitur 7
+
+Workspace Visualization
+
+Menampilkan:
+
+* Area kerja robot
+* Titik yang dapat dijangkau
+* Titik yang tidak dapat dijangkau
+
+Menggunakan point cloud 3D.
+
+⸻
+
+Fitur 8
+
+Path Planning Simulator
+
+Algoritma:
+
+* Linear
+* Cubic
+* Quintic
+
+Output:
+
+* Trajectory
+* Velocity
+* Acceleration
+
+Visualisasi animasi.
+
+⸻
+
+Fitur 9
+
+Collision Detection
+
+Mendeteksi:
+
+* Link dengan link
+* Link dengan obstacle
+
+Obstacle:
+
+* Kubus
+* Bola
+* Silinder
+
+⸻
+
+Fitur 10
+
+Preset Industrial Scenario
+
+Simulasi:
+
+* Pick and Place
+* Palletizing
+* Welding
+* Painting
+* Packaging
+
+⸻
+
+7. User Flow
+
+Home
+
+↓
+
+Pilih Jenis Robot
+
+↓
+
+Buka Simulator
+
+↓
+
+Input Parameter
+
+↓
+
+Hitung
+
+↓
+
+Visualisasi
+
+↓
+
+Analisis Hasil
+
+↓
+
+Download Laporan
+
+⸻
+
+8. Dashboard Layout
+
+Sidebar
+
+* Home
+* Robot Library
+* Simulator
+* Matrix Playground
+* Workspace
+* Path Planning
+* Documentation
+
+⸻
+
+Main Area
+
+Canvas 3D
+
+⸻
+
+Right Panel
+
+Parameter Input
+
+⸻
+
+Bottom Panel
+
+Output
+
+* Matrix
+* Joint Values
+* Coordinate Values
+
+⸻
+
+9. Formula Engine
+
+Forward Kinematics
+
+Menggunakan DH Convention
+
+T = A1 × A2 × A3 × … × An
+
+⸻
+
+Inverse Kinematics
+
+Menggunakan:
+
+* Analytical IK
+* Numerical IK
+
+Metode:
+
+* Jacobian
+* Gradient Descent
+
+⸻
+
+Workspace
+
+Monte Carlo Sampling
+
+10.000 hingga 100.000 titik
+
+⸻
+
+10. Export
+
+Format:
+
+* PDF
+* CSV
+* JSON
+
+Isi laporan:
+
+* Jenis Robot
+* Parameter
+* Matriks
+* Posisi End Effector
+* Screenshot Workspace
+
+⸻
+
+11. Non Functional Requirements
+
+Performance
+
+* Perhitungan < 1 detik
+* Render 60 FPS
+
+⸻
+
+Scalability
+
+Mendukung:
+
+* 100 concurrent users
+
+⸻
+
+Browser Support
+
+* Chrome
+* Edge
+* Firefox
+* Safari
+
+⸻
+
+Responsiveness
+
+* Desktop
+* Tablet
+* Mobile
+
+⸻
+
+12. MVP (Versi 1.0)
+
+Fitur wajib:
+
+✅ Robot Library
+
+✅ 3D Viewer
+
+✅ Forward Kinematics
+
+✅ Inverse Kinematics
+
+✅ DH Parameter Input
+
+✅ Matrix Playground
+
+✅ Export PDF
+
+⸻
+
+13. Future Development
+
+AI Assistant Robotika
+
+User dapat bertanya:
+
+“Bagaimana menghitung FK robot ini?”
+
+AI menjelaskan langkah demi langkah.
+
+⸻
+
+Digital Twin
+
+Menghubungkan simulator dengan robot fisik.
+
+⸻
+
+ROS Integration
+
+Mendukung:
+
+* ROS2
+* Gazebo
+* MoveIt
+
+⸻
+
+14. Success Metrics
+
+* 1.000 pengguna pertama
+* Retensi > 40%
+* Waktu penggunaan rata-rata > 10 menit
+* Tingkat keberhasilan simulasi > 95%
+
+⸻
+
+Ringkasan
+
+Robotika Simulator adalah platform pembelajaran robot lengan berbasis web yang memungkinkan pengguna mempelajari berbagai tipe robot, kinematika, matriks transformasi, path planning, dan workspace secara interaktif menggunakan visualisasi 3D real-time yang dibangun dengan Python dan teknologi web modern.
+
+Rekomendasi sebagai Robotic Scientist
+
+Untuk versi yang benar-benar kuat secara akademis dan industri, saya sarankan arsitektur berikut:
+
+* Backend: Python + FastAPI
+* Matematika Robotika: NumPy + SymPy + Robotics Toolbox for Python
+* 3D Visualization: Three.js
+* Frontend: React + TypeScript
+* Database: PostgreSQL
+* Deployment: Docker + Nginx + Ubuntu Server
+
+Dengan stack tersebut, aplikasi dapat berkembang dari sekadar simulator edukasi menjadi platform yang mendekati simulator profesional seperti RoboDK, MATLAB Robotics Toolbox, atau Gazebo di masa depan.
+
